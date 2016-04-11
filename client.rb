@@ -56,8 +56,8 @@ class Client
   end
 
   def send(msgtype, msg)
-    json = "{'type':#{msgtype}', 'msg':'#{msg}'}"
-    @outbox << json
+    data = "({'type':'#{msgtype}','msg':'#{msg}'})"
+    @outbox << data
   end
 
   def update
