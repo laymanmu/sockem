@@ -1,12 +1,13 @@
 
 
 class Room
-  attr_reader :id, :type, :name, :clients
+  attr_reader :id, :type, :name, :clients, :desc
 
   def initialize(parms)
     @id      = parms[:id]
     @type    = :room
     @name    = parms[:name]
+    @desc    = parms[:desc]
     @clients = []
   end
 
@@ -25,7 +26,10 @@ class Room
   end
 
   def update
-    puts "#{@name} is updating ..."
+  end
+
+  def client_names
+    @clients.collect { |client| client.name }
   end
 
 end

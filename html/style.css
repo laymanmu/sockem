@@ -22,3 +22,14 @@ body {
   height: 100px;
   width:  600px;
 }
+
+.roomName {
+  color: yellow;
+  font-size: 16;
+}
+.roomDesc {
+  color: blue;
+}
+.clientName {
+  color: green;
+}

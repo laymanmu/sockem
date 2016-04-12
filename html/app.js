@@ -11,6 +11,7 @@ var App = {
 
     App.ws.onopen = function(evt) {
       App.appendLog("opened connection");
+      App.ws.send("look");
     };
 
     App.ws.onmessage = function(evt) {
@@ -44,34 +45,42 @@ var App = {
     App.ui.messages.innerHTML += "<p>"+ msg +"</p>\n";
   },
 
+  appendHTML: function(html) {
+    App.ui.messages.innerHTML += html;
+  },
+
   appendLog: function(msg) {
     App.ui.log.innerHTML += "<p>"+msg+"</p>\n";
   },
 
   react: function(message) {
-    var json = eval(message);
+    console.log("IN: "+ message);
+    var json = JSON.parse(message);
     switch (json.type) {
-      case "msg": App.appendMessage(json.msg); break;
-      case "log": App.appendLog(json.msg); break;
-      default:    App.appendLog("unhandled message! type: "+ json.type +" msg: "+ json.msg);
+      case "msg":
+        App.appendMessage(json.msg);
+        break;
+      case "log":
+        App.appendLog(json.msg);
+        break;
+      case "room":
+        App.appendHTML(App.generateRoomHTML(json.msg))
+        break;
+      default:
+        App.appendLog("unhandled message! type: "+ json.type +" msg: "+ json.msg);
     }
+  },
+
+  generateRoomHTML: function(data) {
+    var html = "<div class='room'><span class='roomName'>"+ data.name +"</span><br>";
+    html += "<span class='roomDesc'>"+ data.desc +"</span><br>";
+    var clients = [];
+    for (var i=0; i<data.clients.length; i++) {
+      clients.push("<span class='clientName'>"+ data.clients[i] +"</span>");
+    }
+    html += clients.join(", ");
+    html += "</div>";
+    return html;
   }
 
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
