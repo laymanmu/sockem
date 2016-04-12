@@ -4,7 +4,7 @@ body {
   margin: 10px;
   background-color: #333;
   color: white;
-  font-family: monospace;
+  font-family: helvetica;
   font-size: 14;
 }
 
@@ -24,12 +24,12 @@ body {
 }
 
 .roomName {
-  color: yellow;
+  color: #aaeeaa;
   font-size: 16;
 }
 .roomDesc {
-  color: blue;
+  color: #ccc;
 }
 .clientName {
-  color: green;
+  color: #aaaaee;
 }
