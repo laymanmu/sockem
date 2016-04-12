@@ -68,10 +68,10 @@ class Client
   end
 
   def process_inbox
-    if @is_connected
+    if @is_connected and not @actor.nil?
       @inbox.each do |msg|
         parts = msg.partition(/\s+/)
-        handle_command(parts.first, parts.last)
+        @actor.handle_command(parts.first.to_sym, parts.last)
       end
       @inbox = []
     end
@@ -89,26 +89,8 @@ class Client
     process_outbox
   end
 
-  def handle_command(command, parmstring="")
-    case command
-    when "say"
-      @room.broadcast(:msg, "#{@name} says #{parmstring}")
-    when "exits"
-      rooms = @db.all(:room).collect { |room| room.name }
-      send(:exits, rooms.join(", "))
-    when "look"
-      room = {:name=>@room.name, :desc=>@room.desc, :clients=>@room.client_names}
-      sendData(:room, room.to_json)
-    when "move"
-      room = @db.all(:room).select { |room| room.name == parmstring }[0]
-      if room
-        change_room(rooms[0])
-      else
-        send(:msg, "no room found named #{parmstring}")
-      end
-    else
-      send(:msg, "unknown command: #{input}")
-    end
+  def set_actor(actor)
+    @actor = actor
   end
 
 end

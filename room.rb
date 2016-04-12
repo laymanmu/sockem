@@ -1,7 +1,7 @@
 
 
 class Room
-  attr_reader :id, :type, :name, :clients, :desc
+  attr_reader :id, :type, :name, :clients, :desc, :exits
 
   def initialize(parms)
     @id      = parms[:id]
@@ -9,6 +9,7 @@ class Room
     @name    = parms[:name]
     @desc    = parms[:desc]
     @clients = []
+    @exits   = {}
   end
 
   def enter(client)
@@ -30,6 +31,22 @@ class Room
 
   def client_names
     @clients.collect { |client| client.name }
+  end
+
+  def exit_names
+    @exits.keys.sort
+  end
+
+  def add_exit(name, room)
+    @exits[name] = room
+  end
+
+  def remove_exit(name)
+    @exits.delete(name)
+  end
+
+  def to_json
+    {:name=>@name, :desc=>@desc, :clients=>client_names, :exits=>exit_names}.to_json
   end
 
 end
