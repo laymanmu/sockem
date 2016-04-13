@@ -20,10 +20,12 @@ class Database
   end
 
   def save(id, entity)
+    log("save id: #{id} name: #{entity.name}")
     @entities[id] = entity
   end
 
   def delete(id)
+    log("delete id: #{id} name: #{@entities[id].name}")
     @entities.delete(id)
   end
 
@@ -32,11 +34,17 @@ class Database
     case type
     when :room
       entity = Room.new(parms)
-    when :client
-      entity = Client.new(parms)
+    when :actor
+      entity = Actor.new(parms)
     end
+    log("create type: #{type} name: #{entity.name}")
     save(entity.id, entity)
     entity
+  end
+
+  def log(msg)
+    type = "db"
+    Controller.instance.log(msg, type)
   end
 
 end

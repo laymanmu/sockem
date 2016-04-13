@@ -11,7 +11,6 @@ var App = {
 
     App.ws.onopen = function(evt) {
       App.appendLog("opened connection");
-      App.ws.send("look");
     };
 
     App.ws.onmessage = function(evt) {
@@ -72,15 +71,19 @@ var App = {
   },
 
   generateRoomHTML: function(data) {
-    var html = "<div class='room'><span class='roomName'>"+ data.name +"</span><br>";
-    html += "<span class='roomDesc'>"+ data.desc +"</span><br>";
-    var clients = [];
-    for (var i=0; i<data.clients.length; i++) {
-      clients.push("<span class='clientName'>"+ data.clients[i] +"</span>");
+    var name   = "<span class='roomName'>"+ data.name +"</span><br>";
+    var desc   = "<span class='roomDesc'>"+ data.desc +"</span><br>";
+    var actors = [];
+    var exits  = [];
+    for (var i=0; i<data.actors.length; i++) {
+      actors.push("<span class='actorName'>"+ data.actors[i] +"</span>");
     }
-    html += clients.join(", ");
-    html += "</div>";
-    return html;
+    for (var i=0; i<data.exits.length; i++) {
+      exits.push("<span class='exitName'>"+ data.exits[i] +"</span>");
+    }
+    actors = actors.join(", ") + "<br>";
+    exits  = exits.join(", ")  + "<br>";
+    return "<div id='room'>" + name + desc + actors + exits + "</div>";
   }
 
 };

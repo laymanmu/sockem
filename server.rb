@@ -12,22 +12,25 @@ office = db.create(:room, {:name=>"The Office", :desc=>'A small office with a de
 lobby.add_exit(:north, office)
 office.add_exit(:south, lobby)
 
+def log(msg)
+  Controller.instance.log(msg, :server)
+end
+
 EM.run {
-  puts "listening to: #{host}:#{port}"
+  log("listening to: #{host}:#{port}")
 
   EM::WebSocket.run(:host=>host, :port=>port, :debug=>false) do |ws|
-    client = db.create(:client, {:ws=>ws, :room=>lobby})
-    actor  = Actor.new(client)
+    db.create(:actor, {:ws=>ws, :room=>lobby})
   end
 
   EM::PeriodicTimer.new(seconds_between_ticks) do
-    puts "  tick"
-    db.all(:client).each do |client|
-      client.update
+    db.all(:actor).each do |actor|
+      log("updating: #{actor.name}")
+      actor.update
     end
-    db.all(:room).each do |room|
-      room.update
-    end
+  end
+
+  EM::PeriodicTimer.new(1) do
     $stdout.flush
   end
 }

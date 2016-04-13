@@ -2,56 +2,40 @@
 class Client
   attr_reader :id, :type, :name, :is_connected, :ws, :room
 
-  def initialize(parms)
-    @id   = parms[:id]
-    @type = :client
-    @name = "client#{@id}"
+  def initialize(ws)
     @is_connected = false
-    @inbox  = []
-    @outbox = []
-    @db     = Database.instance
-
-    send(:msg, "welcome, #{@name}")
-    connect(parms[:ws])       if parms[:ws]
-    change_room(parms[:room]) if parms[:room]
+    @inbox        = []
+    @outbox       = []
+    @db           = Database.instance
+    @id           = @db.get_next_id
+    connect(ws)
   end
 
   def connect(ws)
     @ws = ws
 
     @ws.onopen do |handshake|
+      log("connected")
       @is_connected = true
-      puts "#{@name} connected"
+      process_outbox
+      process_inbox
     end
 
     @ws.onmessage do |msg|
+      log("got msg: #{msg}")
       @inbox << msg
       process_inbox
     end
 
     @ws.onclose do
-      disconnect
+      log("disconnected")
+      @is_connected = false
+      @actor.die if @actor
     end
 
     @ws.onerror do |e|
-      puts "#{@name} ws error: #{e.message}"
-    end
-  end
-
-  def change_room(room)
-    @room.leave(self) if @room
-    @room = room
-    @room.enter(self)
-    send(:msg, "you entered #{@room.name}")
-  end
-
-  def disconnect
-    @is_connected = false
-    puts "#{@name} disconnected"
-    if @room
-      @room.leave(self)
-      @room.broadcast("#{@name} disconnected")
-      @room = nil
+      backtrace = e.backtrace.join("\n")
+      log("error: #{e.message}\n #{backtrace}")
     end
   end
 
@@ -71,26 +55,35 @@ class Client
     if @is_connected and not @actor.nil?
       @inbox.each do |msg|
         parts = msg.partition(/\s+/)
+        log("process_inbox sending command: #{parts}")
         @actor.handle_command(parts.first.to_sym, parts.last)
       end
       @inbox = []
+    else
+      log("process_inbox skip. count: #{@inbox.length}. cnct? #{@is_connected}, actor? #{!@actor.nil?}")
     end
   end
 
   def process_outbox
     if @is_connected
-      @outbox.each { |msg| @ws.send(msg) }
+      @outbox.each do |msg|
+        log("process_outbox sending msg: #{msg}")
+        @ws.send(msg)
+      end
       @outbox = []
+    else
+      log("process_outbox skip. count: #{@outbox.length}")
     end
   end
 
-  def update
-    process_inbox
-    process_outbox
+  def set_actor(actor)
+    log("set_actor: #{actor.name}")
+    @actor = actor
   end
 
-  def set_actor(actor)
-    @actor = actor
+  def log(msg)
+    type = "client#{@id}"
+    Controller.instance.log(msg, type)
   end
 
 end
