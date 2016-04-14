@@ -28,7 +28,7 @@ class Actor
 
     # say:
     @commands[:say] = Proc.new do |parms|
-      send(:msg, "#{@name} says: #{parms}")
+      @room.broadcast(:msg, "#{@name} says: #{parms}")
     end
 
     # look:
