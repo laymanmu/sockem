@@ -38,7 +38,7 @@ class Actor
 
     # move:
     @commands[:move] = Proc.new do |parms|
-      room = @room.exits[parms]
+      room = @room.exits[parms.to_sym]
       room.nil? ? send(:msg, "no room found #{parms}") : enter_room(room)
     end
   end
