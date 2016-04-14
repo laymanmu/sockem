@@ -5,34 +5,74 @@ body {
   background-color: #333;
   color: white;
   font-family: helvetica;
-  font-size: 4;
+  font-size: 14px;
 }
 
-#messages {
-  height: 400px;
+/************************
+ * room
+/************************/
+
+#room {
+  height: 200px;
   width:  600px;
   overflow: auto;
   background-color: #000;
   color: #ddd;
+  font-weight: bold;
+  margin-bottom: 1em;
+  padding: 5px;
 }
+.roomName {
+  color: #aaeeaa;
+  font-size: 16px;
+}
+.roomDesc {
+  color: #ccc;
+}
+.roomActor {
+  color: #aaaaee;
+}
+.roomExit {
+  color: #aaffff;
+}
+
+/************************
+ * messages
+/************************/
+
+#messages {
+  height: 200px;
+  width:  600px;
+  overflow: auto;
+  background-color: #000;
+  color: #ddd;
+  margin-bottom: 1em;
+  padding: 5px;
+}
+
+/************************
+ * input
+/************************/
+
+#input {
+  width: 600px;
+  margin-bottom: 1em;
+}
+#messageText {
+  width: 87%;
+}
+#sendButton {
+  width: 10%;
+}
+
+/************************
+ * log
+/************************/
 
 #log {
   background-color: #fff;
   color: #000;
   height: 100px;
   width:  600px;
-}
-
-.roomName {
-  color: #aaeeaa;
-  font-size: 12;
-}
-.roomDesc {
-  color: #ccc;
-}
-.actorName {
-  color: #aaaaee;
-}
-.exitName {
-  color: #aaffff;
+  font-size: 12px;
 }

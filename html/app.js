@@ -28,10 +28,11 @@ var App = {
 
   initUI: function() {
     App.ui = {};
-    App.ui.log         = document.getElementById('log');
+    App.ui.room        = document.getElementById('room');
     App.ui.messages    = document.getElementById('messages');
     App.ui.sendButton  = document.getElementById('sendButton');
     App.ui.messageText = document.getElementById('messageText');
+    App.ui.log         = document.getElementById('log');
 
     App.ui.sendButton.onclick = function() {
       var message = App.ui.messageText.value;
@@ -63,7 +64,7 @@ var App = {
         App.appendLog(json.msg);
         break;
       case "room":
-        App.appendHTML(App.generateRoomHTML(json.msg))
+        App.ui.room.innerHTML = App.generateRoomHTML(json.msg);
         break;
       default:
         App.appendLog("unhandled message! type: "+ json.type +" msg: "+ json.msg);
@@ -76,14 +77,14 @@ var App = {
     var actors = [];
     var exits  = [];
     for (var i=0; i<data.actors.length; i++) {
-      actors.push("<span class='actorName'>"+ data.actors[i] +"</span>");
+      actors.push("<span class='roomActor'>"+ data.actors[i] +"</span>");
     }
     for (var i=0; i<data.exits.length; i++) {
-      exits.push("<span class='exitName'>"+ data.exits[i] +"</span>");
+      exits.push("<span class='roomExit'>"+ data.exits[i] +"</span>");
     }
     actors = actors.join(", ") + "<br>";
     exits  = exits.join(", ")  + "<br>";
-    return "<div id='room'>" + name + desc + actors + exits + "</div>";
+    return name + desc + actors + exits;
   }
 
 };
